@@ -6,6 +6,27 @@ namespace ProceduralToolkit.Tests
     public class Geometry2DCircleCircleTest
     {
         [Test]
+        public void Distance_Coincident()
+        {
+            Assert.AreEqual(Geometry.DistanceToCircle(Circle.unit, Circle.unit), -2);
+            Assert.AreEqual(Geometry.DistanceToCircle(new Circle(Vector2.one, 2), new Circle(Vector2.one, 2)), -4);
+        }
+
+        [Test]
+        public void Distance_OutsideOnePoint()
+        {
+            Assert.AreEqual(Geometry.DistanceToCircle(Circle.unit, new Circle(Vector2.right*2, 1)), 0);
+            Assert.AreEqual(Geometry.DistanceToCircle(new Circle(Vector2.right*2, 1), Circle.unit), 0);
+        }
+
+        [Test]
+        public void Distance_Separate()
+        {
+            Assert.AreEqual(Geometry.DistanceToCircle(Circle.unit, new Circle(Vector2.right*3, 1)), 1);
+            Assert.AreEqual(Geometry.DistanceToCircle(new Circle(Vector2.right*3, 1), Circle.unit), 1);
+        }
+
+        [Test]
         public void Intersect_Coincident()
         {
             IntersectionCircleCircle intersection;
@@ -34,9 +55,9 @@ namespace ProceduralToolkit.Tests
         {
             IntersectionCircleCircle intersection;
             Assert.True(Geometry.IntersectCircleCircle(new Circle(Vector2.zero, 2), new Circle(Vector2.right, 1), out intersection));
-            Assert.True(intersection.pointA == Vector2.right*2);
+            Assert.AreEqual(intersection.pointA, Vector2.right*2);
             Assert.True(Geometry.IntersectCircleCircle(new Circle(Vector2.right, 1), new Circle(Vector2.zero, 2), out intersection));
-            Assert.True(intersection.pointA == Vector2.right*2);
+            Assert.AreEqual(intersection.pointA, Vector2.right*2);
         }
 
         [Test]
@@ -56,11 +77,11 @@ namespace ProceduralToolkit.Tests
         {
             IntersectionCircleCircle intersection;
             Assert.True(Geometry.IntersectCircleCircle(new Circle(Vector2.zero, 5), new Circle(Vector2.right*8, 5), out intersection));
-            Assert.True(intersection.pointA == new Vector2(4, -3));
-            Assert.True(intersection.pointB == new Vector2(4, 3));
+            Assert.AreEqual(intersection.pointA, new Vector2(4, -3));
+            Assert.AreEqual(intersection.pointB, new Vector2(4, 3));
             Assert.True(Geometry.IntersectCircleCircle(new Circle(Vector2.right*8, 5), new Circle(Vector2.zero, 5), out intersection));
-            Assert.True(intersection.pointA == new Vector2(4, 3));
-            Assert.True(intersection.pointB == new Vector2(4, -3));
+            Assert.AreEqual(intersection.pointA, new Vector2(4, 3));
+            Assert.AreEqual(intersection.pointB, new Vector2(4, -3));
         }
 
         [Test]
@@ -68,9 +89,9 @@ namespace ProceduralToolkit.Tests
         {
             IntersectionCircleCircle intersection;
             Assert.True(Geometry.IntersectCircleCircle(Circle.unit, new Circle(Vector2.right*2, 1), out intersection));
-            Assert.True(intersection.pointA == Vector2.right);
+            Assert.AreEqual(intersection.pointA, Vector2.right);
             Assert.True(Geometry.IntersectCircleCircle(new Circle(Vector2.right*2, 1), Circle.unit, out intersection));
-            Assert.True(intersection.pointA == Vector2.right);
+            Assert.AreEqual(intersection.pointA, Vector2.right);
         }
 
         [Test]
