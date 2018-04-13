@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace ProceduralToolkit.Tests
 {
-    public class Geometry2DPointLine2Test : GeometryTest
+    public class Geometry2DPointLineTest : GeometryTest
     {
         [Test]
         public void Distance_PointOnLine()
