@@ -27,6 +27,45 @@ namespace ProceduralToolkit.Tests
         }
 
         [Test]
+        public void ClosestPoints_Coincident()
+        {
+            Vector2 pointA;
+            Vector2 pointB;
+            Geometry.ClosestPointsOnCircles(Circle.unit, Circle.unit, out pointA, out pointB);
+            Assert.AreEqual(pointA, Vector2.zero);
+            Assert.AreEqual(pointB, Vector2.zero);
+            Geometry.ClosestPointsOnCircles(new Circle(Vector2.one, 2), new Circle(Vector2.one, 2), out pointA, out pointB);
+            Assert.AreEqual(pointA, Vector2.one);
+            Assert.AreEqual(pointB, Vector2.one);
+        }
+
+        [Test]
+        public void ClosestPoints_OutsideOnePoint()
+        {
+            Vector2 pointA;
+            Vector2 pointB;
+            Geometry.ClosestPointsOnCircles(Circle.unit, new Circle(Vector2.right*2, 1), out pointA, out pointB);
+            Assert.AreEqual(pointA, Vector2.right);
+            Assert.AreEqual(pointB, Vector2.right);
+            Geometry.ClosestPointsOnCircles(new Circle(Vector2.right*2, 1), Circle.unit, out pointA, out pointB);
+            Assert.AreEqual(pointA, Vector2.right);
+            Assert.AreEqual(pointB, Vector2.right);
+        }
+
+        [Test]
+        public void ClosestPoints_Separate()
+        {
+            Vector2 pointA;
+            Vector2 pointB;
+            Geometry.ClosestPointsOnCircles(Circle.unit, new Circle(Vector2.right*3, 1), out pointA, out pointB);
+            Assert.AreEqual(pointA, Vector2.right);
+            Assert.AreEqual(pointB, Vector2.right*2);
+            Geometry.ClosestPointsOnCircles(new Circle(Vector2.right*3, 1), Circle.unit, out pointA, out pointB);
+            Assert.AreEqual(pointA, Vector2.right*2);
+            Assert.AreEqual(pointB, Vector2.right);
+        }
+
+        [Test]
         public void Intersect_Coincident()
         {
             IntersectionCircleCircle intersection;
