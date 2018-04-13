@@ -87,5 +87,51 @@ namespace ProceduralToolkit.Tests
                     "\ndelta: " + delta.ToString("F8"));
             }
         }
+
+        [Test]
+        public void Intersect_PointOnLine()
+        {
+            Assert.True(Geometry.IntersectPointLine(Vector2.zero, Line2.xAxis));
+            Assert.True(Geometry.IntersectPointLine(Vector2.right, Line2.xAxis));
+            Assert.True(Geometry.IntersectPointLine(Vector2.left, Line2.xAxis));
+            Assert.True(Geometry.IntersectPointLine(Vector2.right*1000, Line2.xAxis));
+            Assert.True(Geometry.IntersectPointLine(Vector2.left*1000, Line2.xAxis));
+
+            Assert.True(Geometry.IntersectPointLine(Vector2.zero, Line2.yAxis));
+            Assert.True(Geometry.IntersectPointLine(Vector2.up, Line2.yAxis));
+            Assert.True(Geometry.IntersectPointLine(Vector2.down, Line2.yAxis));
+            Assert.True(Geometry.IntersectPointLine(Vector2.up*1000, Line2.yAxis));
+            Assert.True(Geometry.IntersectPointLine(Vector2.down*1000, Line2.yAxis));
+
+            var diagonal = new Line2(Vector2.zero, Vector2.one.normalized);
+            Assert.True(Geometry.IntersectPointLine(Vector2.zero, diagonal));
+            Assert.True(Geometry.IntersectPointLine(Vector2.one, diagonal));
+            Assert.True(Geometry.IntersectPointLine(-Vector2.one, diagonal));
+            Assert.True(Geometry.IntersectPointLine(Vector2.one*1000, diagonal));
+            Assert.True(Geometry.IntersectPointLine(-Vector2.one*1000, diagonal));
+        }
+
+        [Test]
+        public void Intersect_PointNotOnLine()
+        {
+            int side;
+            Assert.False(Geometry.IntersectPointLine(Vector2.up, Line2.xAxis, out side));
+            Assert.AreEqual(side, -1);
+            Assert.False(Geometry.IntersectPointLine(Vector2.down, Line2.xAxis, out side));
+            Assert.AreEqual(side, 1);
+            Assert.False(Geometry.IntersectPointLine(Vector2.up*1000, Line2.xAxis, out side));
+            Assert.AreEqual(side, -1);
+            Assert.False(Geometry.IntersectPointLine(Vector2.down*1000, Line2.xAxis, out side));
+            Assert.AreEqual(side, 1);
+
+            Assert.False(Geometry.IntersectPointLine(Vector2.left, Line2.yAxis, out side));
+            Assert.AreEqual(side, -1);
+            Assert.False(Geometry.IntersectPointLine(Vector2.right, Line2.yAxis, out side));
+            Assert.AreEqual(side, 1);
+            Assert.False(Geometry.IntersectPointLine(Vector2.left*1000, Line2.yAxis, out side));
+            Assert.AreEqual(side, -1);
+            Assert.False(Geometry.IntersectPointLine(Vector2.right*1000, Line2.yAxis, out side));
+            Assert.AreEqual(side, 1);
+        }
     }
 }
