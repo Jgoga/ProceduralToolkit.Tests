@@ -38,6 +38,38 @@ namespace ProceduralToolkit.Tests
         }
 
         [Test]
+        public void ClosestPoint_PointOnLine()
+        {
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.zero, Line2.xAxis), Vector2.zero);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.right, Line2.xAxis), Vector2.right);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.left, Line2.xAxis), Vector2.left);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.right*1000, Line2.xAxis), Vector2.right*1000);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.left*1000, Line2.xAxis), Vector2.left*1000);
+
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.zero, Line2.yAxis), Vector2.zero);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.up, Line2.yAxis), Vector2.up);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.down, Line2.yAxis), Vector2.down);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.up*1000, Line2.yAxis), Vector2.up*1000);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.down*1000, Line2.yAxis), Vector2.down*1000);
+
+            var diagonal = new Line2(Vector2.zero, Vector2.one.normalized);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.zero, diagonal), Vector2.zero);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.one, diagonal), Vector2.one);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(-Vector2.one, diagonal), -Vector2.one);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.one*1000, diagonal), Vector2.one*1000);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(-Vector2.one*1000, diagonal), -Vector2.one*1000);
+        }
+
+        [Test]
+        public void ClosestPoint_PointNotOnLine()
+        {
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.up, Line2.xAxis), Vector2.zero);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.down, Line2.xAxis), Vector2.zero);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.up*1000, Line2.xAxis), Vector2.zero);
+            Assert.AreEqual(Geometry.ClosestPointOnLine(Vector2.down*1000, Line2.xAxis), Vector2.zero);
+        }
+
+        [Test]
         public void ClosestPoint_RandomPointOnLine()
         {
             for (int i = 0; i < testCycles; i++)
