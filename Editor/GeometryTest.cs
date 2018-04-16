@@ -1,4 +1,5 @@
 using UnityEngine;
+using NUnit.Framework;
 
 namespace ProceduralToolkit.Tests
 {
@@ -35,6 +36,12 @@ namespace ProceduralToolkit.Tests
         protected float GetRandomOffset()
         {
             return Random.Range(-testRange, testRange);
+        }
+
+        protected void AreEqual(Vector2 actual, Vector2 expected)
+        {
+            Assert.True((expected - actual).sqrMagnitude < Geometry.Epsilon, actual.ToString("F8") + " " + expected.ToString("F8") +
+                                                                             "\ndelta:" + (actual - expected).sqrMagnitude);
         }
     }
 }
