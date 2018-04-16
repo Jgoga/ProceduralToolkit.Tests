@@ -205,7 +205,7 @@ namespace ProceduralToolkit.Tests
             var lineA = new Line2(Vector2.zero, direction);
             var lineB = new Line2(direction*1000, direction);
             Assert.IsTrue(Geometry.IntersectLineLine(lineA, lineB, out intersection));
-            Assert.IsTrue(intersection == Vector2.zero, "intersection: " + intersection);
+            AreEqual(intersection, Vector2.zero);
         }
 
         [Test]
@@ -216,7 +216,7 @@ namespace ProceduralToolkit.Tests
             var lineA = new Line2(Vector2.zero, direction);
             var lineB = new Line2(direction*1000, -direction);
             Assert.IsTrue(Geometry.IntersectLineLine(lineA, lineB, out intersection));
-            Assert.IsTrue(intersection == Vector2.zero, "intersection: " + intersection);
+            AreEqual(intersection, Vector2.zero);
         }
 
         [Test]
@@ -237,7 +237,7 @@ namespace ProceduralToolkit.Tests
             var lineA = new Line2(Vector2.zero, direction);
             var lineB = new Line2(Vector2.zero, direction.RotateCW(90));
             Assert.IsTrue(Geometry.IntersectLineLine(lineA, lineB, out intersection));
-            Assert.IsTrue(intersection == Vector2.zero, "intersection: " + intersection);
+            AreEqual(intersection, Vector2.zero);
         }
 
         [Test]
@@ -248,7 +248,7 @@ namespace ProceduralToolkit.Tests
                 Vector2 intersection;
                 var line = new Line2(GetRandomOrigin2(), GetRandomDirection2());
                 Assert.IsTrue(Geometry.IntersectLineLine(line, line, out intersection), line.ToString("F8"));
-                Assert.IsTrue(intersection == line.origin, "intersection: " + intersection);
+                AreEqual(intersection, line.origin);
             }
         }
 
@@ -263,7 +263,7 @@ namespace ProceduralToolkit.Tests
                 var lineA = new Line2(origin, direction);
                 var lineB = new Line2(origin + direction*GetRandomOffset(), direction);
                 Assert.IsTrue(Geometry.IntersectLineLine(lineA, lineB, out intersection), lineA.ToString("F8") + "\n" + lineB.ToString("F8"));
-                Assert.IsTrue(intersection == origin, "intersection: " + intersection);
+                AreEqual(intersection, origin);
             }
         }
 
@@ -278,7 +278,7 @@ namespace ProceduralToolkit.Tests
                 var lineA = new Line2(origin, direction);
                 var lineB = new Line2(origin + direction*GetRandomOffset(), -direction);
                 Assert.IsTrue(Geometry.IntersectLineLine(lineA, lineB, out intersection), lineA.ToString("F8") + "\n" + lineB.ToString("F8"));
-                Assert.IsTrue(intersection == origin, "intersection: " + intersection);
+                AreEqual(intersection, origin);
             }
         }
 
@@ -307,7 +307,7 @@ namespace ProceduralToolkit.Tests
                 var lineA = new Line2(origin, direction);
                 var lineB = new Line2(origin, direction.RotateCW(90));
                 Assert.IsTrue(Geometry.IntersectLineLine(lineA, lineB, out intersection), lineA.ToString("F8") + "\n" + lineB.ToString("F8"));
-                Assert.IsTrue(intersection == origin, "intersection: " + intersection);
+                AreEqual(intersection, origin);
             }
         }
 
