@@ -40,8 +40,9 @@ namespace ProceduralToolkit.Tests
 
         protected void AreEqual(Vector2 actual, Vector2 expected)
         {
-            Assert.True((expected - actual).sqrMagnitude < Geometry.Epsilon, actual.ToString("F8") + " " + expected.ToString("F8") +
-                                                                             "\ndelta:" + (actual - expected).sqrMagnitude);
+            float delta = (actual - expected).magnitude;
+            Assert.True(delta < Geometry.Epsilon,
+                string.Format("actual: {0} expected: {1}\ndelta: {2:F8}", actual.ToString("G9"), expected.ToString("G9"), delta));
         }
     }
 }
