@@ -5,6 +5,164 @@ namespace ProceduralToolkit.Tests
 {
     public class Geometry2DRayRayTest : GeometryTest
     {
+        #region Distance
+
+        [Test]
+        public void Distance_Coincident()
+        {
+            for (int i = 0; i < 360; i++)
+            {
+                var ray = new Ray2D(Vector2.zero, Vector2.up.RotateCW(i).normalized);
+                AreEqual_DistanceToRay(ray, ray, 0);
+            }
+        }
+
+        [Test]
+        public void Distance_CollinearCodirected()
+        {
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(Vector2.zero, direction);
+                var rayB = new Ray2D(direction*100, direction);
+                AreEqual_DistanceToRaySwap(rayA, rayB, 0);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(-direction*100, direction);
+                var rayB = new Ray2D(Vector2.zero, direction);
+                AreEqual_DistanceToRaySwap(rayA, rayB, 0);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(-direction*100, direction);
+                var rayB = new Ray2D(direction*100, direction);
+                AreEqual_DistanceToRaySwap(rayA, rayB, 0);
+            }
+        }
+
+        [Test]
+        public void Distance_CollinearContradirectedOverlapping()
+        {
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(Vector2.zero, direction);
+                var rayB = new Ray2D(direction*100, -direction);
+                AreEqual_DistanceToRaySwap(rayA, rayB, 0);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(-direction*100, direction);
+                var rayB = new Ray2D(Vector2.zero, -direction);
+                AreEqual_DistanceToRaySwap(rayA, rayB, 0);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(-direction*100, direction);
+                var rayB = new Ray2D(direction*100, -direction);
+                AreEqual_DistanceToRaySwap(rayA, rayB, 0);
+            }
+        }
+
+        [Test]
+        public void Distance_CollinearContradirectedNonOverlapping()
+        {
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(Vector2.zero, -direction);
+                var rayB = new Ray2D(direction*100, direction);
+                AreEqual_DistanceToRaySwap(rayA, rayB, 100);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(-direction*100, -direction);
+                var rayB = new Ray2D(Vector2.zero, direction);
+                AreEqual_DistanceToRaySwap(rayA, rayB, 100);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(-direction*50, -direction);
+                var rayB = new Ray2D(direction*50, direction);
+                AreEqual_DistanceToRaySwap(rayA, rayB, 100);
+            }
+        }
+
+        [Test]
+        public void Distance_Parallel()
+        {
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(Vector2.zero, direction);
+                var rayB = new Ray2D(direction.RotateCW(90), direction);
+                AreEqual_DistanceToRaySwap(rayA, rayB, 1);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(Vector2.zero, direction);
+                var rayB = new Ray2D(direction.RotateCW(90) + direction, direction);
+                AreEqual_DistanceToRaySwap(rayA, rayB, 1);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(Vector2.zero, direction);
+                var rayB = new Ray2D(direction.RotateCW(90) - direction, direction);
+                AreEqual_DistanceToRaySwap(rayA, rayB, 1);
+            }
+        }
+
+        [Test]
+        public void Distance_Perpendicular()
+        {
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(Vector2.zero, direction);
+                var rayB = new Ray2D(Vector2.zero, direction.RotateCW(90));
+                AreEqual_DistanceToRaySwap(rayA, rayB, 0);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(Vector2.zero, direction);
+                var rayB = new Ray2D(-direction.RotateCW(90), direction.RotateCW(90));
+                AreEqual_DistanceToRaySwap(rayA, rayB, 0);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(Vector2.zero, direction);
+                var rayB = new Ray2D(direction.RotateCW(90), direction.RotateCW(90));
+                AreEqual_DistanceToRaySwap(rayA, rayB, 1);
+            }
+        }
+
+        private void AreEqual_DistanceToRaySwap(Ray2D rayA, Ray2D rayB, float expected)
+        {
+            AreEqual_DistanceToRay(rayA, rayB, expected);
+            AreEqual_DistanceToRay(rayB, rayA, expected);
+        }
+
+        private void AreEqual_DistanceToRay(Ray2D rayA, Ray2D rayB, float expected)
+        {
+            float distance = Geometry.DistanceToRay(rayA, rayB);
+            float delta = Mathf.Abs(expected - distance);
+            Assert.True(delta < Geometry.Epsilon, string.Format("{0}\n{1}\ndistance: {2:G9} expected: {3:G9}\ndelta: {4:F8}",
+                rayA.ToString("G9"), rayB.ToString("G9"), distance, expected, delta));
+        }
+
+        #endregion Distance
+
         #region Intersect
 
         [Test]
