@@ -508,13 +508,53 @@ namespace ProceduralToolkit.Tests
         }
 
         [Test]
-        public void Intersect_Parallel()
+        public void Intersect_ParallelCodirected()
         {
             for (int i = 0; i < 360; i++)
             {
                 Vector2 direction = Vector2.up.RotateCW(i).normalized;
                 var rayA = new Ray2D(Vector2.zero, direction);
                 var rayB = new Ray2D(direction.RotateCW(90), direction);
+                IsFalse_IntersectRayRay(rayA, rayB);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(Vector2.zero, direction);
+                var rayB = new Ray2D(direction.RotateCW(90) + direction, direction);
+                IsFalse_IntersectRayRay(rayA, rayB);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(Vector2.zero, direction);
+                var rayB = new Ray2D(direction.RotateCW(90) - direction, direction);
+                IsFalse_IntersectRayRay(rayA, rayB);
+            }
+        }
+
+        [Test]
+        public void Intersect_ParallelContradirected()
+        {
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(Vector2.zero, direction);
+                var rayB = new Ray2D(direction.RotateCW(90), -direction);
+                IsFalse_IntersectRayRay(rayA, rayB);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(Vector2.zero, direction);
+                var rayB = new Ray2D(direction.RotateCW(90) + direction, -direction);
+                IsFalse_IntersectRayRay(rayA, rayB);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var rayA = new Ray2D(Vector2.zero, direction);
+                var rayB = new Ray2D(direction.RotateCW(90) - direction, -direction);
                 IsFalse_IntersectRayRay(rayA, rayB);
             }
         }
