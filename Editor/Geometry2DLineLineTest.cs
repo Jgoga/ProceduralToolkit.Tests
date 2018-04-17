@@ -10,53 +10,170 @@ namespace ProceduralToolkit.Tests
         [Test]
         public void Distance_Coincident()
         {
-            Assert.AreEqual(Geometry.DistanceToLine(Line2.xAxis, Line2.xAxis), 0);
-            Assert.AreEqual(Geometry.DistanceToLine(Line2.yAxis, Line2.yAxis), 0);
-
-            var line = new Line2(Vector2.zero, Vector2.up.RotateCW(1).normalized);
-            Assert.AreEqual(Geometry.DistanceToLine(line, line), 0);
+            for (int i = 0; i < 360; i++)
+            {
+                var line = new Line2(Vector2.zero, Vector2.up.RotateCW(i).normalized);
+                AreEqual_DistanceToLine(line, line, 0);
+            }
         }
 
         [Test]
-        public void Distance_Codirected()
+        public void Distance_CollinearCodirected()
         {
-            Assert.AreEqual(Geometry.DistanceToLine(Line2.xAxis, Line2.xAxis + Vector2.right*1000), 0);
-            Assert.AreEqual(Geometry.DistanceToLine(Line2.yAxis, Line2.yAxis + Vector2.up*1000), 0);
-
-            var line = new Line2(Vector2.zero, Vector2.up.RotateCW(1).normalized);
-            Assert.AreEqual(Geometry.DistanceToLine(line, line + line.direction*1000), 0);
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction*100, direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 0);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(-direction*100, direction);
+                var lineB = new Line2(Vector2.zero, direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 0);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(-direction*100, direction);
+                var lineB = new Line2(direction*100, direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 0);
+            }
         }
 
         [Test]
-        public void Distance_Collinear()
+        public void Distance_CollinearContradirected()
         {
-            Vector2 direction = Vector2.up.RotateCW(1).normalized;
-            var lineA = new Line2(Vector2.zero, direction);
-            var lineB = new Line2(direction*1000, -direction);
-            Assert.AreEqual(Geometry.DistanceToLine(lineA, lineB), 0);
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction*100, -direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 0);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(-direction*100, direction);
+                var lineB = new Line2(Vector2.zero, -direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 0);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(-direction*100, direction);
+                var lineB = new Line2(direction*100, -direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 0);
+            }
+
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, -direction);
+                var lineB = new Line2(direction*100, direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 0);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(-direction*100, -direction);
+                var lineB = new Line2(Vector2.zero, direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 0);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(-direction*100, -direction);
+                var lineB = new Line2(direction*100, direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 0);
+            }
         }
 
         [Test]
-        public void Distance_Parallel()
+        public void Distance_ParallelCodirected()
         {
-            Assert.AreEqual(Geometry.DistanceToLine(Line2.xAxis, Line2.xAxis + Vector2.up), 1);
-            Assert.AreEqual(Geometry.DistanceToLine(Line2.xAxis, Line2.xAxis + Vector2.up*1000), 1000);
-            Assert.AreEqual(Geometry.DistanceToLine(Line2.yAxis, Line2.yAxis + Vector2.right), 1);
-            Assert.AreEqual(Geometry.DistanceToLine(Line2.yAxis, Line2.yAxis + Vector2.right*1000), 1000);
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90), direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 1);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90) + direction, direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 1);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90) - direction, direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 1);
+            }
+        }
 
-            Vector2 direction = Vector2.up.RotateCW(1).normalized;
-            var lineA = new Line2(Vector2.zero, direction);
-            var lineB = new Line2(direction.RotateCW(90), direction);
-            Assert.AreEqual(Geometry.DistanceToLine(lineA, lineB), 1);
+        [Test]
+        public void Distance_ParallelContradirected()
+        {
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90), -direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 1);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90) + direction, -direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 1);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90) - direction, -direction);
+                AreEqual_DistanceToLineSwap(lineA, lineB, 1);
+            }
         }
 
         [Test]
         public void Distance_Perpendicular()
         {
-            Vector2 direction = Vector2.up.RotateCW(1).normalized;
-            var lineA = new Line2(Vector2.zero, direction);
-            var lineB = new Line2(Vector2.zero, direction.RotateCW(90));
-            Assert.AreEqual(Geometry.DistanceToLine(lineA, lineB), 0);
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(Vector2.zero, direction.RotateCW(90));
+                AreEqual_DistanceToLineSwap(lineA, lineB, 0);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90)*100, direction.RotateCW(90));
+                AreEqual_DistanceToLineSwap(lineA, lineB, 0);
+            }
+        }
+
+        private void AreEqual_DistanceToLineSwap(Line2 lineA, Line2 lineB, float expected)
+        {
+            AreEqual_DistanceToLine(lineA, lineB, expected);
+            AreEqual_DistanceToLine(lineB, lineA, expected);
+        }
+
+        private void AreEqual_DistanceToLine(Line2 lineA, Line2 lineB, float expected)
+        {
+            float distance = Geometry.DistanceToLine(lineA, lineB);
+            float delta = Mathf.Abs(expected - distance);
+            Assert.True(delta < Geometry.Epsilon, string.Format("{0}\n{1}\ndistance: {2:G9} expected: {3:G9}\ndelta: {4:F8}",
+                lineA.ToString("G9"), lineB.ToString("G9"), distance, expected, delta));
         }
 
         #endregion Distance
