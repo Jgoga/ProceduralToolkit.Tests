@@ -67,28 +67,6 @@ namespace ProceduralToolkit.Tests
                 var lineB = new Line2(direction*100, -direction);
                 AreEqual_DistanceToLineSwap(lineA, lineB, 0);
             }
-
-            for (int i = 0; i < 360; i++)
-            {
-                Vector2 direction = Vector2.up.RotateCW(i).normalized;
-                var lineA = new Line2(Vector2.zero, -direction);
-                var lineB = new Line2(direction*100, direction);
-                AreEqual_DistanceToLineSwap(lineA, lineB, 0);
-            }
-            for (int i = 0; i < 360; i++)
-            {
-                Vector2 direction = Vector2.up.RotateCW(i).normalized;
-                var lineA = new Line2(-direction*100, -direction);
-                var lineB = new Line2(Vector2.zero, direction);
-                AreEqual_DistanceToLineSwap(lineA, lineB, 0);
-            }
-            for (int i = 0; i < 360; i++)
-            {
-                Vector2 direction = Vector2.up.RotateCW(i).normalized;
-                var lineA = new Line2(-direction*100, -direction);
-                var lineB = new Line2(direction*100, direction);
-                AreEqual_DistanceToLineSwap(lineA, lineB, 0);
-            }
         }
 
         [Test]
@@ -183,118 +161,173 @@ namespace ProceduralToolkit.Tests
         [Test]
         public void ClosestPoints_Coincident()
         {
-            Vector2 pointA;
-            Vector2 pointB;
-            Geometry.ClosestPointsOnLines(Line2.xAxis, Line2.xAxis, out pointA, out pointB);
-            AreEqual(pointA, Vector2.zero);
-            AreEqual(pointB, Vector2.zero);
-            Geometry.ClosestPointsOnLines(Line2.yAxis, Line2.yAxis, out pointA, out pointB);
-            AreEqual(pointA, Vector2.zero);
-            AreEqual(pointB, Vector2.zero);
-
-            var line = new Line2(Vector2.zero, Vector2.up.RotateCW(1).normalized);
-            Geometry.ClosestPointsOnLines(line, line, out pointA, out pointB);
-            AreEqual(pointA, Vector2.zero);
-            AreEqual(pointB, Vector2.zero);
+            for (int i = 0; i < 360; i++)
+            {
+                var line = new Line2(Vector2.zero, Vector2.up.RotateCW(i).normalized);
+                AreEqual_ClosestPoints(line, line, line.origin, line.origin);
+            }
         }
 
         [Test]
-        public void ClosestPoints_Codirected()
+        public void ClosestPoints_CollinearCodirected()
         {
-            Vector2 pointA;
-            Vector2 pointB;
-            Geometry.ClosestPointsOnLines(Line2.xAxis, Line2.xAxis + Vector2.right*1000, out pointA, out pointB);
-            AreEqual(pointA, Vector2.right*1000);
-            AreEqual(pointB, Vector2.right*1000);
-            Geometry.ClosestPointsOnLines(Line2.xAxis + Vector2.right*1000, Line2.xAxis, out pointA, out pointB);
-            AreEqual(pointA, Vector2.zero);
-            AreEqual(pointB, Vector2.zero);
-            Geometry.ClosestPointsOnLines(Line2.yAxis, Line2.yAxis + Vector2.up*1000, out pointA, out pointB);
-            AreEqual(pointA, Vector2.up*1000);
-            AreEqual(pointB, Vector2.up*1000);
-            Geometry.ClosestPointsOnLines(Line2.yAxis + Vector2.up*1000, Line2.yAxis, out pointA, out pointB);
-            AreEqual(pointA, Vector2.zero);
-            AreEqual(pointB, Vector2.zero);
-
-            var lineA = new Line2(Vector2.zero, Vector2.up.RotateCW(1).normalized);
-            var lineB = lineA + lineA.direction*1000;
-            Geometry.ClosestPointsOnLines(lineA, lineB, out pointA, out pointB);
-            AreEqual(pointA, lineB.origin);
-            AreEqual(pointB, lineB.origin);
-            Geometry.ClosestPointsOnLines(lineB, lineA, out pointA, out pointB);
-            AreEqual(pointA, lineA.origin);
-            AreEqual(pointB, lineA.origin);
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction*100, direction);
+                AreEqual_ClosestPoints(lineA, lineB, lineA.origin, lineA.origin);
+                AreEqual_ClosestPoints(lineB, lineA, lineB.origin, lineB.origin);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(-direction*100, direction);
+                var lineB = new Line2(Vector2.zero, direction);
+                AreEqual_ClosestPoints(lineA, lineB, lineA.origin, lineA.origin);
+                AreEqual_ClosestPoints(lineB, lineA, lineB.origin, lineB.origin);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(-direction*100, direction);
+                var lineB = new Line2(direction*100, direction);
+                AreEqual_ClosestPoints(lineA, lineB, lineA.origin, lineA.origin);
+                AreEqual_ClosestPoints(lineB, lineA, lineB.origin, lineB.origin);
+            }
         }
 
         [Test]
-        public void ClosestPoints_Collinear()
+        public void ClosestPoints_CollinearContradirected()
         {
-            Vector2 pointA;
-            Vector2 pointB;
-            Geometry.ClosestPointsOnLines(Line2.xAxis, new Line2(Vector2.right*1000, Vector2.left), out pointA, out pointB);
-            AreEqual(pointA, Vector2.right*1000);
-            AreEqual(pointB, Vector2.right*1000);
-            Geometry.ClosestPointsOnLines(new Line2(Vector2.right*1000, Vector2.left), Line2.xAxis, out pointA, out pointB);
-            AreEqual(pointA, Vector2.zero);
-            AreEqual(pointB, Vector2.zero);
-            Geometry.ClosestPointsOnLines(Line2.yAxis, new Line2(Vector2.up*1000, Vector2.down), out pointA, out pointB);
-            AreEqual(pointA, Vector2.up*1000);
-            AreEqual(pointB, Vector2.up*1000);
-            Geometry.ClosestPointsOnLines(new Line2(Vector2.up*1000, Vector2.down), Line2.yAxis, out pointA, out pointB);
-            AreEqual(pointA, Vector2.zero);
-            AreEqual(pointB, Vector2.zero);
-
-            Vector2 direction = Vector2.up.RotateCW(1).normalized;
-            var lineA = new Line2(Vector2.zero, direction);
-            var lineB = new Line2(direction*1000, -direction);
-            Geometry.ClosestPointsOnLines(lineA, lineB, out pointA, out pointB);
-            AreEqual(pointA, lineB.origin);
-            AreEqual(pointB, lineB.origin);
-            Geometry.ClosestPointsOnLines(lineB, lineA, out pointA, out pointB);
-            AreEqual(pointA, lineA.origin);
-            AreEqual(pointB, lineA.origin);
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction*100, -direction);
+                AreEqual_ClosestPoints(lineA, lineB, lineA.origin, lineA.origin);
+                AreEqual_ClosestPoints(lineB, lineA, lineB.origin, lineB.origin);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(-direction*100, direction);
+                var lineB = new Line2(Vector2.zero, -direction);
+                AreEqual_ClosestPoints(lineA, lineB, lineA.origin, lineA.origin);
+                AreEqual_ClosestPoints(lineB, lineA, lineB.origin, lineB.origin);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(-direction*100, direction);
+                var lineB = new Line2(direction*100, -direction);
+                AreEqual_ClosestPoints(lineA, lineB, lineA.origin, lineA.origin);
+                AreEqual_ClosestPoints(lineB, lineA, lineB.origin, lineB.origin);
+            }
         }
 
         [Test]
-        public void ClosestPoints_Parallel()
+        public void ClosestPoints_ParallelCodirected()
         {
-            Vector2 pointA;
-            Vector2 pointB;
-            Geometry.ClosestPointsOnLines(Line2.xAxis, Line2.xAxis + Vector2.up, out pointA, out pointB);
-            AreEqual(pointA, Vector2.zero);
-            AreEqual(pointB, Vector2.up);
-            Geometry.ClosestPointsOnLines(Line2.xAxis, Line2.xAxis + Vector2.up*1000, out pointA, out pointB);
-            AreEqual(pointA, Vector2.zero);
-            AreEqual(pointB, Vector2.up*1000);
-            Geometry.ClosestPointsOnLines(Line2.yAxis, Line2.yAxis + Vector2.right, out pointA, out pointB);
-            AreEqual(pointA, Vector2.zero);
-            AreEqual(pointB, Vector2.right);
-            Geometry.ClosestPointsOnLines(Line2.yAxis, Line2.yAxis + Vector2.right*1000, out pointA, out pointB);
-            AreEqual(pointA, Vector2.zero);
-            AreEqual(pointB, Vector2.right*1000);
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90), direction);
+                AreEqual_ClosestPointsSwap(lineA, lineB, lineA.origin, lineB.origin);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90) + direction, direction);
+                AreEqual_ClosestPoints(lineA, lineB, lineA.origin, lineB.origin - direction);
+                AreEqual_ClosestPoints(lineB, lineA, lineB.origin, lineA.origin + direction);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90) - direction, direction);
+                AreEqual_ClosestPoints(lineA, lineB, lineA.origin, lineB.origin + direction);
+                AreEqual_ClosestPoints(lineB, lineA, lineB.origin, lineA.origin - direction);
+            }
+        }
 
-            Vector2 direction = Vector2.up.RotateCW(1).normalized;
-            var lineA = new Line2(Vector2.zero, direction);
-            var lineB = new Line2(direction.RotateCW(90), direction);
-            Geometry.ClosestPointsOnLines(lineA, lineB, out pointA, out pointB);
-            AreEqual(pointA, lineA.origin);
-            AreEqual(pointB, lineB.origin);
-            Geometry.ClosestPointsOnLines(lineB, lineA, out pointA, out pointB);
-            AreEqual(pointA, lineB.origin);
-            AreEqual(pointB, lineA.origin);
+        [Test]
+        public void ClosestPoints_ParallelContradirected()
+        {
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90), -direction);
+                AreEqual_ClosestPointsSwap(lineA, lineB, lineA.origin, lineB.origin);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90) + direction, -direction);
+                AreEqual_ClosestPoints(lineA, lineB, lineA.origin, lineB.origin - direction);
+                AreEqual_ClosestPoints(lineB, lineA, lineB.origin, lineA.origin + direction);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90) - direction, -direction);
+                AreEqual_ClosestPoints(lineA, lineB, lineA.origin, lineB.origin + direction);
+                AreEqual_ClosestPoints(lineB, lineA, lineB.origin, lineA.origin - direction);
+            }
         }
 
         [Test]
         public void ClosestPoints_Perpendicular()
         {
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(Vector2.zero, direction.RotateCW(90));
+                AreEqual_ClosestPointsSwap(lineA, lineB, lineA.origin, lineA.origin);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(-direction.RotateCW(90), direction.RotateCW(90));
+                AreEqual_ClosestPointsSwap(lineA, lineB, lineA.origin, lineA.origin);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90), direction.RotateCW(90));
+                AreEqual_ClosestPointsSwap(lineA, lineB, lineA.origin, lineA.origin);
+            }
+        }
+
+        private void AreEqual_ClosestPointsSwap(Line2 lineA, Line2 lineB, Vector2 expectedA, Vector2 expectedB)
+        {
+            AreEqual_ClosestPoints(lineA, lineB, expectedA, expectedB);
+            AreEqual_ClosestPoints(lineB, lineA, expectedB, expectedA);
+        }
+
+        private void AreEqual_ClosestPoints(Line2 lineA, Line2 lineB, Vector2 expectedA, Vector2 expectedB)
+        {
             Vector2 pointA;
             Vector2 pointB;
-            Vector2 direction = Vector2.up.RotateCW(1).normalized;
-            var lineA = new Line2(Vector2.zero, direction);
-            var lineB = new Line2(Vector2.zero, direction.RotateCW(90));
             Geometry.ClosestPointsOnLines(lineA, lineB, out pointA, out pointB);
-            AreEqual(pointA, Vector2.zero);
-            AreEqual(pointB, Vector2.zero);
+            AreEqual(lineA, lineB, pointA, expectedA);
+            AreEqual(lineA, lineB, pointB, expectedB);
+        }
+
+        private void AreEqual(Line2 lineA, Line2 lineB, Vector2 point, Vector2 expected)
+        {
+            float delta = (point - expected).magnitude;
+            Assert.True(delta < Geometry.Epsilon, string.Format("{0}\n{1}\npoint: {2} expected: {3:G9}\ndelta: {4:F8}",
+                lineA.ToString("G9"), lineB.ToString("G9"), point.ToString("G9"), expected.ToString("G9"), delta));
         }
 
         #endregion ClosestPoints
@@ -304,134 +337,187 @@ namespace ProceduralToolkit.Tests
         [Test]
         public void Intersect_Coincident()
         {
+            for (int i = 0; i < 360; i++)
+            {
+                Intersect_Coincident(new Line2(Vector2.zero, Vector2.up.RotateCW(i).normalized));
+            }
+        }
+
+        private void Intersect_Coincident(Line2 line)
+        {
             IntersectionLineLine2 intersection;
-            Assert.IsTrue(Geometry.IntersectLineLine(Line2.xAxis, Line2.xAxis, out intersection));
-            Assert.AreEqual(intersection.type, IntersectionType.Line);
-            AreEqual(intersection.point, Vector2.zero);
-            Assert.IsTrue(Geometry.IntersectLineLine(Line2.yAxis, Line2.yAxis, out intersection));
-            Assert.AreEqual(intersection.type, IntersectionType.Line);
-            AreEqual(intersection.point, Vector2.zero);
-            var line = new Line2(Vector2.zero, Vector2.up.RotateCW(1).normalized);
-            Assert.IsTrue(Geometry.IntersectLineLine(line, line, out intersection));
+            Assert.IsTrue(Geometry.IntersectLineLine(line, line, out intersection), line.ToString("F8"));
             Assert.AreEqual(intersection.type, IntersectionType.Line);
             AreEqual(intersection.point, line.origin);
         }
 
         [Test]
-        public void Intersect_Codirected()
+        public void Intersect_CollinearCodirected()
         {
-            IntersectionLineLine2 intersection;
-            Vector2 direction = Vector2.up.RotateCW(1).normalized;
-            var lineA = new Line2(Vector2.zero, direction);
-            var lineB = new Line2(direction*1000, direction);
-            Assert.IsTrue(Geometry.IntersectLineLine(lineA, lineB, out intersection));
-            Assert.AreEqual(intersection.type, IntersectionType.Line);
-            AreEqual(intersection.point, Vector2.zero);
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction*100, direction);
+                Intersect_Collinear(lineA, lineB);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(-direction*100, direction);
+                var lineB = new Line2(Vector2.zero, direction);
+                Intersect_Collinear(lineA, lineB);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(-direction*100, direction);
+                var lineB = new Line2(direction*100, direction);
+                Intersect_Collinear(lineA, lineB);
+            }
         }
 
         [Test]
-        public void Intersect_Collinear()
+        public void Intersect_CollinearContradirected()
+        {
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction*100, -direction);
+                Intersect_Collinear(lineA, lineB);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(-direction*100, direction);
+                var lineB = new Line2(Vector2.zero, -direction);
+                Intersect_Collinear(lineA, lineB);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(-direction*100, direction);
+                var lineB = new Line2(direction*100, -direction);
+                Intersect_Collinear(lineA, lineB);
+            }
+        }
+
+        private void Intersect_Collinear(Line2 lineA, Line2 lineB)
         {
             IntersectionLineLine2 intersection;
-            Vector2 direction = Vector2.up.RotateCW(1).normalized;
-            var lineA = new Line2(Vector2.zero, direction);
-            var lineB = new Line2(direction*1000, -direction);
-            Assert.IsTrue(Geometry.IntersectLineLine(lineA, lineB, out intersection));
+            IsTrue_IntersectLineLine(lineA, lineB, out intersection);
             Assert.AreEqual(intersection.type, IntersectionType.Line);
-            AreEqual(intersection.point, Vector2.zero);
+            AreEqual(lineA, lineB, intersection.point, lineA.origin);
+            IsTrue_IntersectLineLine(lineB, lineA, out intersection);
+            Assert.AreEqual(intersection.type, IntersectionType.Line);
+            AreEqual(lineA, lineB, intersection.point, lineB.origin);
         }
 
         [Test]
-        public void Intersect_Parallel()
+        public void Intersect_ParallelCodirected()
         {
-            IntersectionLineLine2 intersection;
-            Vector2 direction = Vector2.up.RotateCW(1).normalized;
-            var lineA = new Line2(Vector2.zero, direction);
-            var lineB = new Line2(direction.RotateCW(90), direction);
-            Assert.IsFalse(Geometry.IntersectLineLine(lineA, lineB, out intersection));
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90), direction);
+                IsFalse_IntersectLineLine(lineA, lineB);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90) + direction, direction);
+                IsFalse_IntersectLineLine(lineA, lineB);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90) - direction, direction);
+                IsFalse_IntersectLineLine(lineA, lineB);
+            }
+        }
+
+        [Test]
+        public void Intersect_ParallelContradirected()
+        {
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90), -direction);
+                IsFalse_IntersectLineLine(lineA, lineB);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90) + direction, -direction);
+                IsFalse_IntersectLineLine(lineA, lineB);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90) - direction, -direction);
+                IsFalse_IntersectLineLine(lineA, lineB);
+            }
         }
 
         [Test]
         public void Intersect_Perpendicular()
         {
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(Vector2.zero, direction.RotateCW(90));
+                Intersect_Perpendicular(lineA, lineB, lineA.origin);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(-direction.RotateCW(90), direction.RotateCW(90));
+                Intersect_Perpendicular(lineA, lineB, lineA.origin);
+            }
+            for (int i = 0; i < 360; i++)
+            {
+                Vector2 direction = Vector2.up.RotateCW(i).normalized;
+                var lineA = new Line2(Vector2.zero, direction);
+                var lineB = new Line2(direction.RotateCW(90), direction.RotateCW(90));
+                Intersect_Perpendicular(lineA, lineB, lineA.origin);
+            }
+        }
+
+        private void Intersect_Perpendicular(Line2 lineA, Line2 lineB, Vector2 expected)
+        {
             IntersectionLineLine2 intersection;
-            Vector2 direction = Vector2.up.RotateCW(1).normalized;
-            var lineA = new Line2(Vector2.zero, direction);
-            var lineB = new Line2(Vector2.zero, direction.RotateCW(90));
-            Assert.IsTrue(Geometry.IntersectLineLine(lineA, lineB, out intersection));
+            IsTrue_IntersectLineLine(lineA, lineB, out intersection);
             Assert.AreEqual(intersection.type, IntersectionType.Point);
-            AreEqual(intersection.point, Vector2.zero);
+            AreEqual(lineA, lineB, intersection.point, expected);
+            IsTrue_IntersectLineLine(lineB, lineA, out intersection);
+            Assert.AreEqual(intersection.type, IntersectionType.Point);
+            AreEqual(lineA, lineB, intersection.point, expected);
         }
 
-        [Test]
-        public void Intersect_RandomCoincident()
+        private void IsTrue_IntersectLineLine(Line2 lineA, Line2 lineB, out IntersectionLineLine2 intersection)
         {
-            for (int i = 0; i < testCycles; i++)
-            {
-                IntersectionLineLine2 intersection;
-                var line = new Line2(GetRandomOrigin2(), GetRandomDirection2());
-                Assert.IsTrue(Geometry.IntersectLineLine(line, line, out intersection), line.ToString("F8"));
-                AreEqual(intersection.point, line.origin);
-            }
+            Assert.IsTrue(Geometry.IntersectLineLine(lineA, lineB, out intersection), lineA.ToString("F8") + "\n" + lineB.ToString("F8"));
         }
 
-        [Test]
-        public void Intersect_RandomCodirected()
+        private void IsFalse_IntersectLineLine(Line2 lineA, Line2 lineB)
         {
-            for (int i = 0; i < testCycles; i++)
-            {
-                IntersectionLineLine2 intersection;
-                Vector2 origin = GetRandomOrigin2();
-                Vector2 direction = GetRandomDirection2();
-                var lineA = new Line2(origin, direction);
-                var lineB = new Line2(origin + direction*GetRandomOffset(), direction);
-                Assert.IsTrue(Geometry.IntersectLineLine(lineA, lineB, out intersection), lineA.ToString("F8") + "\n" + lineB.ToString("F8"));
-                AreEqual(intersection.point, origin);
-            }
+            IntersectionLineLine2 intersection;
+            IsFalse_IntersectLineLine(lineA, lineB, out intersection);
+            IsFalse_IntersectLineLine(lineB, lineA, out intersection);
         }
 
-        [Test]
-        public void Intersect_RandomCollinear()
+        private void IsFalse_IntersectLineLine(Line2 lineA, Line2 lineB, out IntersectionLineLine2 intersection)
         {
-            for (int i = 0; i < testCycles; i++)
-            {
-                IntersectionLineLine2 intersection;
-                Vector2 origin = GetRandomOrigin2();
-                Vector2 direction = GetRandomDirection2();
-                var lineA = new Line2(origin, direction);
-                var lineB = new Line2(origin + direction*GetRandomOffset(), -direction);
-                Assert.IsTrue(Geometry.IntersectLineLine(lineA, lineB, out intersection), lineA.ToString("F8") + "\n" + lineB.ToString("F8"));
-                AreEqual(intersection.point, origin);
-            }
-        }
-
-        [Test]
-        public void Intersect_RandomParallel()
-        {
-            for (int i = 0; i < testCycles; i++)
-            {
-                IntersectionLineLine2 intersection;
-                Vector2 origin = GetRandomOrigin2();
-                Vector2 direction = GetRandomDirection2();
-                var lineA = new Line2(origin, direction);
-                var lineB = new Line2(origin + direction.RotateCW(90), direction);
-                Assert.IsFalse(Geometry.IntersectLineLine(lineA, lineB, out intersection), lineA.ToString("F8") + "\n" + lineB.ToString("F8"));
-            }
-        }
-
-        [Test]
-        public void Intersect_RandomPerpendicular()
-        {
-            for (int i = 0; i < testCycles; i++)
-            {
-                IntersectionLineLine2 intersection;
-                Vector2 origin = GetRandomOrigin2();
-                Vector2 direction = GetRandomDirection2();
-                var lineA = new Line2(origin, direction);
-                var lineB = new Line2(origin, direction.RotateCW(90));
-                Assert.IsTrue(Geometry.IntersectLineLine(lineA, lineB, out intersection), lineA.ToString("F8") + "\n" + lineB.ToString("F8"));
-                AreEqual(intersection.point, origin);
-            }
+            Assert.IsFalse(Geometry.IntersectLineLine(lineA, lineB, out intersection), lineA.ToString("F8") + "\n" + lineB.ToString("F8"));
         }
 
         #endregion Intersect
