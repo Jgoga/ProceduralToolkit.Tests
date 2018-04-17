@@ -77,12 +77,12 @@ namespace ProceduralToolkit.Tests
                 Vector2 origin = GetRandomOrigin2();
                 Vector2 direction = GetRandomDirection2();
                 Vector2 point = origin + direction*GetRandomOffset();
-                var ray = new Ray2D(origin, direction);
+                var line = new Line2(origin, direction);
 
-                Vector2 closest = Geometry.ClosestPointOnLine(point, ray);
+                Vector2 closest = Geometry.ClosestPointOnLine(point, line);
                 float delta = (closest - point).magnitude;
                 Assert.IsTrue(delta < Geometry.Epsilon,
-                    "originA: " + ray.origin.ToString("F8") + " directionA: " + ray.direction.ToString("F8") +
+                    "originA: " + line.origin.ToString("F8") + " directionA: " + line.direction.ToString("F8") +
                     "\npoint: " + point.ToString("F8") + " closest: " + closest.ToString("F8") +
                     "\ndelta: " + delta.ToString("F8"));
             }
